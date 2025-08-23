@@ -9,5 +9,19 @@ if (!isset($_SESSION['user'])) {
 	exit;
 }
 
-echo htmlspecialchars($_SESSION['user']['name']);
-echo "<br><img src='" . htmlspecialchars($_SESSION['user']['picture']) . "'>";
+require_once "templates/header.php";
+
+$events = $mysqli->query("SELECT * FROM Events");
+
+if (!$events) echo "<p>Žádné události</p>";
+else {
+	while ($row = $events->fetch_assoc()) {
+		echo "
+			<div class='event'>
+				<p class='title'>$row[title]</p>
+				<p class='description'>$row[description]</p>
+			</div>";
+	}
+}
+
+require_once "templates/footer.php";
