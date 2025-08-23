@@ -4,8 +4,10 @@ require_once "config.php";
 
 session_start();
 
-if (isset($_SESSION['user'])) {
-	echo "Hello, " . htmlspecialchars($_SESSION['user']['name']);
-	echo "<br><img src='" . htmlspecialchars($_SESSION['user']['picture']) . "'>";
+if (!isset($_SESSION['user'])) {
+	require_once "login.php";
+	exit;
 }
-else require_once "login.php";
+
+echo htmlspecialchars($_SESSION['user']['name']);
+echo "<br><img src='" . htmlspecialchars($_SESSION['user']['picture']) . "'>";
