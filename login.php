@@ -14,7 +14,12 @@ $loginUrl = $client->createAuthUrl();
 require_once "templates/header.php";
 
 ?>
-<a href="<?= htmlspecialchars($loginUrl) ?>">Login with Google</a>
+    <div class="btn" style="text-align: center">
+        <a href="<?= htmlspecialchars($loginUrl) ?>">
+            Skibidi přihlášení
+            <img src="https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico">
+        </a>
+    </div>
 <?php
 
 require_once "templates/footer.php";

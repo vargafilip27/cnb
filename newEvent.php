@@ -44,9 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$description = trim($_POST['description']);
 	$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-	var_dump($title, $description, $dbId, $password);
-	sleep(10);
-
 	if (!$mysqli->query("	INSERT INTO Events (id_user, title, description, password)
 								VALUES ('$dbId', '$title', '$description', '$password')"	))
 		die("DB Error: " . $mysqli->error);
