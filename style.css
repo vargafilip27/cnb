@@ -1,11 +1,29 @@
-.page-content {
+body {
+	padding: 0;
+	margin: 0;
+}
 
+h1 {
+	text-align: center;
+}
+
+.page-content {
+	display: flex;
+	flex-direction: column;
+	background-image: linear-gradient(to right, azure, aliceblue);
 }
 
 .event {
-	width: 200px;
-	height: 200px;
+	width: 400px;
+	height: 400px;
 	background-color: lightgray;
+	margin: 50px auto;
+	padding: 20px;
+}
+
+.event:hover {
+	background-color: white;
+	transition: 0.2s;
 }
 
 .title {

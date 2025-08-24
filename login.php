@@ -10,5 +10,11 @@ $client->addScope('profile');
 
 // Generate Google login URL
 $loginUrl = $client->createAuthUrl();
+
+require_once "templates/header.php";
+
 ?>
 <a href="<?= htmlspecialchars($loginUrl) ?>">Login with Google</a>
+<?php
+
+require_once "templates/footer.php";
