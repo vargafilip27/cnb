@@ -13,6 +13,8 @@ require_once "templates/header.php";
 
 $events = $mysqli->query("SELECT * FROM Events");
 
+echo "<div class='btn'><a href='newEvent.php'>Přidat událost</a></div>";
+
 if (!$events) echo "<p>Žádné události</p>";
 else {
 	while ($row = $events->fetch_assoc()) {

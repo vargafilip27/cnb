@@ -3,7 +3,7 @@ body {
 	margin: 0;
 }
 
-h1 {
+h1, h2 {
 	text-align: center;
 }
 
@@ -33,4 +33,40 @@ h1 {
 
 .description {
 	font-size: 30px;
+}
+
+.detail-row {
+	display: flex;
+	margin: 8px 0;
+}
+
+.detail-label {
+	min-width: 250px;
+	font-weight: bold;
+	padding: 6px 10px;
+}
+
+.detail-value {
+	background-color: #f5f5f5;
+	padding: 6px 10px;
+	border-radius: 6px;
+	min-width: 400px;
+	height: 20px;
+}
+
+.btn a, button {
+	background-color: gray;
+	color: black;
+	padding: 10px 16px;
+	border-radius: 6px;
+	text-decoration: none;
+	font-weight: bold;
+	display: inline-block;
+	margin-bottom: 20px;
+	transition: background 0.3s ease;
+}
+
+.btn a:hover, button:hover {
+	background-color: white;
+	color: dimgray;
 }
