@@ -18,13 +18,18 @@ if (isset($_GET['code'])) {
 		$oauth2 = new Google\Service\Oauth2($client);
 		$userInfo = $oauth2->userinfo->get();
 
-		// Example: Store user info in session
+		// Store user info in session
 		$_SESSION['user'] = [
 			'id'    => $userInfo->id,
 			'name'  => $userInfo->name,
-			'email' => $userInfo->email,
-			'picture' => $userInfo->picture
+			'email' => $userInfo->email
 		];
+
+		$user = $mysqli->query("SELECT * FROM Users WHERE google_id = '$userInfo->id'");
+
+		if ($user->num_rows < 1)
+			$mysqli->query("	INSERT INTO Users (google_id, email, name)
+									VALUES ('$userInfo->id', '$userInfo->email', '$userInfo->name')	");
 
 		// Redirect to homepage
 		header('Location: index.php');
