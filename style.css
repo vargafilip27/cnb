@@ -16,7 +16,7 @@ a {
 .page-content {
 	display: flex;
 	flex-direction: column;
-	background-image: linear-gradient(to right, azure, aliceblue);
+	background-image: linear-gradient(to top, orange, lightyellow);
 	min-height: 100%;
 	padding: 50px;
 }
@@ -24,7 +24,7 @@ a {
 .event {
 	width: 400px;
 	height: 400px;
-	background-color: lightgray;
+	background-color: orangered;
 	margin: 50px auto;
 	padding: 20px;
 }
@@ -36,7 +36,7 @@ a {
 }
 
 .event:hover {
-	background-color: white;
+	background-color: orange;
 	transition: 0.2s;
 }
 

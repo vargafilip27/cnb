@@ -56,8 +56,17 @@ echo "<p class='title'>$result[title]</p>
       <p class='description'>$result[description]</p>";
 
 $dbId = $_SESSION["user"]["dbId"];
-$mysqli->query("INSERT INTO Expenses (id_event, id_user) VALUES ($idEvent, $dbId)");
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	$nights = $_POST['nights'];
+	$expense = $_POST['expense'];
+
+	$mysqli->query("  UPDATE Expenses
+                            SET nights = $nights, expense = $expense
+                            WHERE id_user = $dbId AND id_event = $idEvent   ");
+}
+
+$mysqli->query("INSERT INTO Expenses (id_event, id_user) VALUES ($idEvent, $dbId)");
 $participants = $mysqli->query("SELECT * FROM Expenses WHERE id_event = $idEvent");
 
 if ($participants) {
@@ -83,10 +92,10 @@ if ($participants) {
                 <td>$name[name]</td>
              ";
 
-        if ($row[id_user] == $dbId) echo "<td><input type='number' name='nights' value='$row[nights]'></td>";
+        if ($row[id_user] == $dbId) echo "<td><input type='number' name='nights' value=$row[nights]></td>";
         else echo "<td>'$row[nights]'</td>";
 
-		if ($row[id_user] == $dbId) echo "<td><input type='number' name='expense' value='$row[expense]'></td>";
+		if ($row[id_user] == $dbId) echo "<td><input type='number' name='expense' value=$row[expense]></td>";
 		else echo "<td>'$row[expense]'</td>";
     }
 
