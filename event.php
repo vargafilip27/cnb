@@ -55,20 +55,24 @@ if (!empty($result["password"])) {
 echo "<p class='title'>$result[title]</p>
       <p class='description'>$result[description]</p>";
 
+$dbId = $_SESSION["user"]["dbId"];
+$mysqli->query("INSERT INTO Expenses (id_event, id_user) VALUES ($idEvent, $dbId)");
+
 $participants = $mysqli->query("SELECT * FROM Expenses WHERE id_event = $idEvent");
 
 if ($participants) {
 
-	echo "<table>
-			<thead>
-				<tr>
-					<td>Účastník</td>
-					<td>Počet večerů</td>
-					<td>Výdaje</td>
-				<tr>
-			</thead>
-			<tbody>
-			";
+	echo "<form method='post'>
+            <table class='tbl'>
+			    <thead>
+				    <tr>
+					    <td>Účastník</td>
+					    <td>Počet večerů</td>
+					    <td>Výdaje</td>
+				    <tr>
+			    </thead>
+			    <tbody>
+			    ";
 
     while ($row = $participants->fetch_assoc()) {
 
@@ -76,15 +80,20 @@ if ($participants) {
         $name = $nameQuery->fetch_assoc();
 
         echo "<tr>
-                <td>$name</td>
-                <td>$row[expense]</td>
-                <td>$row[nights]</td>
-              </tr>
-              ";
+                <td>$name[name]</td>
+             ";
+
+        if ($row[id_user] == $dbId) echo "<td><input type='number' name='nights' value='$row[nights]'></td>";
+        else echo "<td>'$row[nights]'</td>";
+
+		if ($row[id_user] == $dbId) echo "<td><input type='number' name='expense' value='$row[expense]'></td>";
+		else echo "<td>'$row[expense]'</td>";
     }
 
-    echo "  </tbody>
-          </table>
+    echo "    </tbody>
+            </table>
+            <button class='btn' type='submit'>Upravit</button>
+          </form>
           ";
 }
 
