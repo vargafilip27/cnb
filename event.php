@@ -52,4 +52,40 @@ if (!empty($result["password"])) {
     }
 }
 
-echo "Page content unlocked";
+echo "<p class='title'>$result[title]</p>
+      <p class='description'>$result[description]</p>";
+
+$participants = $mysqli->query("SELECT * FROM Expenses WHERE id_event = $idEvent");
+
+if ($participants) {
+
+	echo "<table>
+			<thead>
+				<tr>
+					<td>Účastník</td>
+					<td>Počet večerů</td>
+					<td>Výdaje</td>
+				<tr>
+			</thead>
+			<tbody>
+			";
+
+    while ($row = $participants->fetch_assoc()) {
+
+        $nameQuery = $mysqli->query("SELECT name FROM Users WHERE id_user = $row[id_user]");
+        $name = $nameQuery->fetch_assoc();
+
+        echo "<tr>
+                <td>$name</td>
+                <td>$row[expense]</td>
+                <td>$row[nights]</td>
+              </tr>
+              ";
+    }
+
+    echo "  </tbody>
+          </table>
+          ";
+}
+
+require_once "templates/footer.php";
