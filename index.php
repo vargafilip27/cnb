@@ -19,10 +19,21 @@ if (!$events) echo "<p>Žádné události</p>";
 else {
 	while ($row = $events->fetch_assoc()) {
 		echo "
-			<div class='event'>
-				<p class='title'>$row[title]</p>
-				<p class='description'>$row[description]</p>
-			</div>";
+			<a href='event.php?id=" . $row[id_event] . "' class='event'>
+					<p class='title'>$row[title]</p>
+					<p class='description'>$row[description]</p>
+				";
+
+		$eventFounderId = $row[id_user];
+		$result = $mysqli->query("SELECT * FROM Users WHERE id_user='$eventFounderId'");
+
+		if ($result->num_rows > 0) {
+			$userRow = $result->fetch_assoc();
+			echo "<p>Vytvořil $userRow[name]</p>";
+		}
+		echo "
+			</a>
+			";
 	}
 }
 

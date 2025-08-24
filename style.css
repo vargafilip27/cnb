@@ -7,6 +7,12 @@ h1, h2 {
 	text-align: center;
 }
 
+a {
+	display: block;
+	text-decoration: none; /* optional */
+	color: inherit;        /* optional */
+}
+
 .page-content {
 	display: flex;
 	flex-direction: column;
@@ -20,6 +26,12 @@ h1, h2 {
 	background-color: lightgray;
 	margin: 50px auto;
 	padding: 20px;
+}
+
+.event a {
+	text-underline: none;
+	color: black;
+	cursor: pointer;
 }
 
 .event:hover {
