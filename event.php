@@ -91,7 +91,7 @@ if ($participants) {
         public $debt;
         public $nights;
 
-        public function __construct($name, $debt, $nights) {
+        public function __construct(string $name, float $debt, int $nights) {
             $this->name = $name;
             $this->debt = $debt;
             $this->nights = $nights;
@@ -111,7 +111,7 @@ if ($participants) {
                 <td>$name[name]</td>
              ";
 
-        $scores[] = new Score($name["name"], $row['expense']);
+        $scores[] = new Score($name["name"], $row['expense'], $row["nights"]);
 
         if ($row[id_user] == $dbId) echo "<td><input type='number' name='nights' value=$row[nights]></td>";
         else echo "<td>$row[nights]</td>";
@@ -133,7 +133,7 @@ if ($participants) {
 	}
 
     usort($scores, function($a, $b) {
-        return $b->debt <=> $a->debt;
+        return $a->debt <=> $b->debt;
     });
 
     $lo = 0;
@@ -142,13 +142,13 @@ if ($participants) {
     while ($lo < $hi) {
 
         if (-$scores[$lo]->debt < $scores[$hi]->debt) {
-            echo "<p>" . $scores[$lo]->name . " " . -$scores[$lo]->debt . " >>> " . $scores[$hi]->name . "</p>";
+            echo "<p>" . $scores[$lo]->name . " " . round(-$scores[$lo]->debt, 2) . " >>> " . $scores[$hi]->name . "</p>";
 
             $scores[$hi]->debt -= $scores[$lo]->debt;
 			$scores[$lo++]->debt = 0;
         }
         else {
-			echo "<p>" . $scores[$lo]->name . " " . $scores[$hi]->debt . " >>> " . $scores[$hi]->name . "</p>";
+			echo "<p>" . $scores[$lo]->name . " " . round($scores[$hi]->debt, 2) . " >>> " . $scores[$hi]->name . "</p>";
 
 			$scores[$lo]->debt += $scores[$hi]->debt;
 			$scores[$hi--]->debt = 0;
