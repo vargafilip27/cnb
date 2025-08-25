@@ -84,14 +84,17 @@ if ($participants) {
 			    ";
 
     $sum = 0;
+    $totalNights = 0;
 
     class Score {
         public $name;
         public $debt;
+        public $nights;
 
-        public function __construct($name, $debt) {
+        public function __construct($name, $debt, $nights) {
             $this->name = $name;
             $this->debt = $debt;
+            $this->nights = $nights;
         }
     }
 
@@ -102,6 +105,7 @@ if ($participants) {
         $name = $nameQuery->fetch_assoc();
 
         $sum += $row["expense"];
+        $totalNights += $row["nights"];
 
         echo "<tr>
                 <td>$name[name]</td>
@@ -122,11 +126,34 @@ if ($participants) {
           </form>
           ";
 
-    $avg = $sum / $participants->num_rows;
+    $avg = $sum / $totalNights;
 
     foreach ($scores as $score) {
-        $score->debt -= $avg;
+        $score->debt -= ($avg*$score->nights);
 	}
+
+    usort($scores, function($a, $b) {
+        return $b->debt <=> $a->debt;
+    });
+
+    $lo = 0;
+    $hi = count($scores)-1;
+
+    while ($lo < $hi) {
+
+        if (-$scores[$lo]->debt < $scores[$hi]->debt) {
+            echo "<p>" . $scores[$lo]->name . " " . -$scores[$lo]->debt . " >>> " . $scores[$hi]->name . "</p>";
+
+            $scores[$hi]->debt -= $scores[$lo]->debt;
+			$scores[$lo++]->debt = 0;
+        }
+        else {
+			echo "<p>" . $scores[$lo]->name . " " . $scores[$hi]->debt . " >>> " . $scores[$hi]->name . "</p>";
+
+			$scores[$lo]->debt += $scores[$hi]->debt;
+			$scores[$hi--]->debt = 0;
+        }
+    }
 }
 
 require_once "templates/footer.php";
