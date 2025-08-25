@@ -95,9 +95,9 @@ a {
 	border-collapse: collapse;
 }
 
-.tbl thead, .vehicles-table td {
+.tbl thead, .tbl td {
 	padding: 12px 15px;
-	border-bottom: 1px solid #a1a1a1;
+	border-bottom: 1px solid black;
 	text-align: left;
 }
 

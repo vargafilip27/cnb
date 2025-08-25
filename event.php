@@ -83,20 +83,37 @@ if ($participants) {
 			    <tbody>
 			    ";
 
-    while ($row = $participants->fetch_assoc()) {
+    $sum = 0;
 
+    class Score {
+        public $name;
+        public $debt;
+
+        public function __construct($name, $debt) {
+            $this->name = $name;
+            $this->debt = $debt;
+        }
+    }
+
+    $scores = [];
+
+    while ($row = $participants->fetch_assoc()) {
         $nameQuery = $mysqli->query("SELECT name FROM Users WHERE id_user = $row[id_user]");
         $name = $nameQuery->fetch_assoc();
+
+        $sum += $row["expense"];
 
         echo "<tr>
                 <td>$name[name]</td>
              ";
 
+        $scores[] = new Score($name["name"], $row['expense']);
+
         if ($row[id_user] == $dbId) echo "<td><input type='number' name='nights' value=$row[nights]></td>";
-        else echo "<td>'$row[nights]'</td>";
+        else echo "<td>$row[nights]</td>";
 
 		if ($row[id_user] == $dbId) echo "<td><input type='number' name='expense' value=$row[expense]></td>";
-		else echo "<td>'$row[expense]'</td>";
+		else echo "<td>$row[expense]</td>";
     }
 
     echo "    </tbody>
@@ -104,6 +121,12 @@ if ($participants) {
             <button class='btn' type='submit'>Upravit</button>
           </form>
           ";
+
+    $avg = $sum / $participants->num_rows;
+
+    foreach ($scores as $score) {
+        $score->debt -= $avg;
+	}
 }
 
 require_once "templates/footer.php";
