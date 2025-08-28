@@ -61,6 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$mysqli->query("  UPDATE Expenses
                             SET nights = $nights, expense = $expense
                             WHERE id_user = $dbId AND id_event = $idEvent   ");
+
+    $bankAccount = $_POST['account'];
+
+    $mysqli->query("  UPDATE Users
+                            SET bank_account = '$bankAccount'
+                            WHERE id_user = $dbId   ");
 }
 
 $mysqli->query("INSERT INTO Expenses (id_event, id_user, expense, nights) VALUES ($idEvent, $dbId, 0, 0)");
@@ -82,16 +88,19 @@ if ($participantsQuery) {
 			    <tbody>
 			    ";
 
+    // Class representing state of each participant in this event
     $sum = 0;
     $totalNights = 0;
 
     class Score {
+        public $id;
         public $name;
         public $debt;
         public $nights;
         public $bankAccount;
 
-        public function __construct(string $name, float $debt, int $nights, string $bankAccount = null) {
+        public function __construct(int $id, string $name, float $debt, int $nights, string $bankAccount = null) {
+            $this->id = $id;
             $this->name = $name;
             $this->debt = $debt;
             $this->nights = $nights;
@@ -102,7 +111,7 @@ if ($participantsQuery) {
     $scores = [];
 
     while ($participantsRow = $participantsQuery->fetch_assoc()) {
-        $nameQuery = $mysqli->query("SELECT name FROM Users WHERE id_user = $participantsRow[id_user]");
+        $nameQuery = $mysqli->query("SELECT * FROM Users WHERE id_user = $participantsRow[id_user]");
         $nameRow = $nameQuery->fetch_assoc();
 
         $sum += $participantsRow["expense"];
@@ -112,7 +121,12 @@ if ($participantsQuery) {
                 <td>$nameRow[name]</td>
              ";
 
-        $scores[] = new Score($nameRow["name"], $participantsRow["expense"], $participantsRow["nights"], $nameRow["bank_account"]);
+        // Add score of participant for calculating later
+        $scores[] = new Score(  $participantsRow["id_user"],
+                                $nameRow["name"],
+                                $participantsRow["expense"],
+                                $participantsRow["nights"],
+                                $nameRow["bank_account"]    );
 
         // Fill table
         // If filling info about logged-in user, make it inputable

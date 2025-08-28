@@ -1,5 +1,10 @@
 <?php
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
+$apiClient = new Client();
+
 // Divide acc prefix
 $prefixDelimiter = strpos($paymentTarget, "-");
 
@@ -15,10 +20,11 @@ else {
 // Get bank code
 $bankCodeDelimiter = strpos($accountNumber, "/");
 
-if ($prefixDelimiter != false) {
-	$bankCode = substr($accountNumber, $prefixDelimiter+1);
+if ($bankCodeDelimiter != false) {
+	$bankCode = substr($accountNumber, $bankCodeDelimiter+1);
+	$accountNumber = substr($accountNumber, 0, $bankCodeDelimiter);
 }
-else $bankCode = $accountNumber;
+else $bankCode = "";
 
 $paymentUrl = 	"https://api.paylibo.com/paylibo/generator/czech/image?" .
 				"accountPrefix=" . $accountPrefix . "&" .
@@ -26,7 +32,17 @@ $paymentUrl = 	"https://api.paylibo.com/paylibo/generator/czech/image?" .
 				"bankCode=" . $bankCode . "&" .
 				"amount=" . $amount . "&" .
 				"currency=CZK&" .
-				"message=" . $eventResult["title"] .
-				"size=150";
+				"size=300";
 
-echo "<img src=$paymentUrl />";
+try {
+	$response = $apiClient->get($paymentUrl);
+	$contentType = $response->getHeaderLine('Content-Type');
+	$body = (string)$response->getBody();
+
+	if (strpos($contentType, 'image/') !== false) {
+		// API returned an image
+		$base64 = base64_encode($body);
+		echo "<img src=$paymentUrl width='300' height='300'/>";
+	}
+}
+catch (RequestException $e) {}
