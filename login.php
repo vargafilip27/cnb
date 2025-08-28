@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-$client = new Google\Client();
-$client->setClientId($_ENV["GOOGLE_CLIENT_ID"]);
-$client->setClientSecret($_ENV["GOOGLE_CLIENT_SECRET"]);
-$client->setRedirectUri('https://filipvarga.cz/cnb/redirect.php');
-$client->addScope('email');
-$client->addScope('profile');
+$googleClient = new Google\Client();
+$googleClient->setClientId($_ENV["GOOGLE_CLIENT_ID"]);
+$googleClient->setClientSecret($_ENV["GOOGLE_CLIENT_SECRET"]);
+$googleClient->setRedirectUri('https://filipvarga.cz/cnb/redirect.php');
+$googleClient->addScope('email');
+$googleClient->addScope('profile');
 
 // Generate Google login URL
-$loginUrl = $client->createAuthUrl();
+$loginUrl = $googleClient->createAuthUrl();
 
 require_once "templates/header.php";
 
