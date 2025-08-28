@@ -4,6 +4,7 @@ require_once "config.php";
 
 session_start();
 
+// Check login
 if (!isset($_SESSION['user'])) {
 	require_once "login.php";
 	exit;
@@ -21,15 +22,12 @@ $result = $query->fetch_assoc();
 
 if (!$result) die("Event not found");
 
+// Authentication for event
 if (!empty($result["password"])) {
 
     if (!isset($_SESSION['unlocked'][$idEvent])){
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-            echo "zadané heslo: " . $_POST['password'] . "\n";
-            echo "hash zadaného: " . password_hash($_POST['password'], PASSWORD_DEFAULT) . "\n";
-            echo "hash aktuálního: " . $result['password'] . "\n";
 
 			if (password_verify($_POST['password'], $result['password'])) {
 				$_SESSION['unlocked'][$idEvent] = true;
@@ -57,6 +55,7 @@ echo "<p class='title'>$result[title]</p>
 
 $dbId = $_SESSION["user"]["dbId"];
 
+// Check for updates
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$nights = $_POST['nights'];
 	$expense = $_POST['expense'];
@@ -66,9 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             WHERE id_user = $dbId AND id_event = $idEvent   ");
 }
 
-$mysqli->query("INSERT INTO Expenses (id_event, id_user) VALUES ($idEvent, $dbId)");
+$mysqli->query("INSERT INTO Expenses (id_event, id_user, expense, nights) VALUES ($idEvent, $dbId, 0, 0)");
 $participants = $mysqli->query("SELECT * FROM Expenses WHERE id_event = $idEvent");
 
+// Generate expenses table
 if ($participants) {
 
 	echo "<form method='post'>
@@ -126,6 +126,7 @@ if ($participants) {
           </form>
           ";
 
+    // Calculate debts
     $avg = $sum / $totalNights;
 
     foreach ($scores as $score) {
@@ -141,7 +142,12 @@ if ($participants) {
 
     while ($lo < $hi) {
 
-        if (-$scores[$lo]->debt < $scores[$hi]->debt) {
+        while ($lo < $hi && abs($scores[$lo]->debt) < 1) ++$lo;
+        while ($lo < $hi && abs($scores[$hi]->debt) < 1) --$hi;
+
+        if ($lo >= $hi) break;
+
+        if ($scores[$lo]->debt < $scores[$hi]->debt) {
             echo "<p>" . $scores[$lo]->name . " " . round(-$scores[$lo]->debt, 2) . " >>> " . $scores[$hi]->name . "</p>";
 
             $scores[$hi]->debt -= $scores[$lo]->debt;
